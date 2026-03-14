@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARWAN ATROUSHI | GLOBAL POS SYSTEM</title>
+    <style>
+        :root {
+            --main-color: #00f2ff;
+            --bg-dark: #020205;
+            --glass: rgba(0, 242, 255, 0.05);
+            --border: rgba(0, 242, 255, 0.2);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar - لایێ ڕاستێ یێ پێشکەفتی */
+        nav {
+            width: 320px;
+            background: linear-gradient(180deg, #000 0%, #050505 100%);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            box-shadow: 10px 0 50px rgba(0,0,0,1);
+            z-index: 10;
+        }
+
+        .user-section {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            margin: 0 20px;
+        }
+
+        .user-avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 20px;
+            border: 2px solid var(--main-color);
+            margin: 0 auto 15px;
+            background: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=500') center/cover;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.3);
+            transform: rotate(-3deg);
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--main-color);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--main-color);
+        }
+
+        .menu-items {
+            flex-grow: 1;
+            padding: 30px 20px;
+        }
+
+        .menu-btn {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-btn:hover {
+            background: var(--main-color);
+            color: #000;
+            transform: translateX(-10px);
+        }
+
+        /* Main POS Area */
+        main {
+            flex-grow: 1;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 30px;
+        }
+
+        .pos-card {
+            background: rgba(10,10,10,0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grid-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .product {
+            background: #0c0c0c;
+            border: 1px solid #222;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .product:hover {
+            border-color: var(--main-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,242,255,0.1);
+        }
+
+        .product h4 { margin: 10px 0; font-size: 16px; }
+        .product p { color: var(--main-color); font-weight: bold; margin: 0; }
+
+        /* Receipt Section */
+        .receipt {
+            background: #000;
+            border: 1px solid var(--main-color);
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,242,255,0.05);
+        }
+
+        .receipt-header {
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .items-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+        }
+
+        .total-box {
+            border-top: 2px solid var(--main-color);
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        .total-amount {
+            font-size: 35px;
+            color: var(--main-color);
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .btn-execute {
+            width: 100%;
+            padding: 20px;
+            background: var(--main-color);
+            color: #000;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--main-color);
+        }
+
+        /* Matrix Rain Background */
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0; z-index: -1;
+            opacity: 0.08;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+    <div class="user-section">
+        <div class="user-avatar"></div>
+        <div class="user-name">MARWAN ATROUSHI</div>
+        <p style="font-size: 10px; color: #666; margin-top: 5px;">SYSTEM OWNER / CEO</p>
+    </div>
+
+    <div class="menu-items">
+        <div class="menu-btn">📊 داشبۆردا گشتی</div>
+        <div class="menu-btn">💰 فرۆشتنا نوو</div>
+        <div class="menu-btn">📦 کۆگا و مەخزەن</div>
+        <div class="menu-btn">🧾 ڕاپۆرتێن دارایی</div>
+        <div class="menu-btn">🔐 ئاسایشا سێرڤەری</div>
+    </div>
+
+    <div style="padding: 20px; font-size: 11px; color: var(--main-color);">
+        SERVER: DUHOK-MAIN-01<br>
+        STATUS: OPERATIONAL
+    </div>
+</nav>
+
+<main>
+    <div class="pos-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin:0;">لیستا کەلوپەلان</h2>
+            <div id="live-clock" style="color: var(--main-color); font-weight: bold;"></div>
+        </div>
+        <div class="grid-products" id="prod-container"></div>
+    </div>
+
+    <div class="receipt">
+        <div class="receipt-header">
+            <h3 style="margin:0;">پسۆلا فەرمی</h3>
+            <p style="font-size: 10px; opacity: 0.5;">MARWAN ATROUSHI SYSTEMS v2.0</p>
+        </div>
+        
+        <div class="items-list" id="cart-items">
+            <div style="text-align: center; margin-top: 50px; opacity: 0.3;">سەبەتە یا خاڵییە...</div>
+        </div>
+
+        <div class="total-box">
+            <div style="font-size: 12px; opacity: 0.6;">کۆمێ گشتی</div>
+            <div class="total-amount"><span id="total-price">0</span> IQD</div>
+            <button class="btn-execute" onclick="finish()">تەمامکرنا فرۆشتنێ</button>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Global Matrix Background
+    const c = document.getElementById('bg-canvas');
+    const x = c.getContext('2d');
+    c.width = window.innerWidth; c.height = window.innerHeight;
+    const chars = "MARWANATROUSHI01".split("");
+    const drops = Array(Math.floor(c.width/20)).fill(1);
+
+    function draw() {
+        x.fillStyle = "rgba(0,0,0,0.05)"; x.fillRect(0,0,c.width,c.height);
+        x.fillStyle = "#00f2ff"; x.font = "15px arial";
+        drops.forEach((y, i) => {
+            const text = chars[Math.floor(Math.random()*chars.length)];
+            x.fillText(text, i*20, y*20);
+            if(y*20 > c.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(draw, 50);
+
+    // POS Functionality
+    const items = [
+        { n: "iPhone 15 Pro Max", p: 1650000 },
+        { n: "Samsung S24 Ultra", p: 1550000 },
+        { n: "MacBook Pro M3", p: 2800000 },
+        { n: "iPad Pro M2", p: 1250000 },
+        { n: "Sony PS5 Slim", p: 750000 },
+        { n: "AirPods Max", p: 680000 }
+    ];
+
+    const container = document.getElementById('prod-container');
+    let total = 0;
+
+    items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `<h4>${item.n}</h4><p>${item.p.toLocaleString()} IQD</p>`;
+        div.onclick = () => {
+            if(total === 0) document.getElementById('cart-items').innerHTML = '';
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.innerHTML = `<span>${item.n}</span><span>${item.p.toLocaleString()}</span>`;
+            document.getElementById('cart-items').appendChild(row);
+            total += item.p;
+            document.getElementById('total-price').innerText = total.toLocaleString();
+        };
+        container.appendChild(div);
+    });
+
+    function finish() {
+        if(total === 0) return alert("ببۆره، چ تشت د ناڤ پسۆلێ دا نینن!");
+        alert("سەرکەفتی بوو! داتایێن فرۆشتنێ بۆ سێرڤەرێ MARWAN ATROUSHI هاتنە ڕەوانەکرن.");
+        location.reload();
+    }
+
+    // Clock
+    setInterval(() => {
+        document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ku-IQ');
+    }, 1000);
+</script>
+</body>
+</html>
