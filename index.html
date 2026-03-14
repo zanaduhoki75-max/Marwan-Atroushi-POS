@@ -3,105 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MARWAN ATROUSHI | ADVANCED POS</title>
+    <title>MARWAN POS | FULL PRO SYSTEM</title>
     <style>
-        :root { --main: #00f2ff; --bg: #020205; --card: rgba(20,20,20,0.9); }
+        :root { --neon: #00f2ff; --bg: #0d1117; --card: #161b22; --border: #30363d; }
         body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        nav { width: 300px; background: #000; border-left: 1px solid #222; padding: 20px; display: flex; flex-direction: column; align-items: center; box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
-        .avatar { width: 110px; height: 110px; border: 2px solid var(--main); border-radius: 20px; margin-bottom: 15px; background: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=200') center/cover; box-shadow: 0 0 20px rgba(0,242,255,0.2); }
-        .stats-box { background: var(--card); border: 1px solid #333; border-radius: 10px; width: 100%; padding: 10px; margin-bottom: 20px; text-align: center; }
-        main { flex: 1; padding: 25px; display: grid; grid-template-columns: 1fr 380px; gap: 25px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; overflow-y: auto; padding-right: 5px; }
-        .item { background: var(--card); border: 1px solid #222; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .item:hover { border-color: var(--main); transform: translateY(-5px); background: rgba(0,242,255,0.05); }
-        .receipt { background: #000; border: 1px solid var(--main); border-radius: 20px; padding: 25px; display: flex; flex-direction: column; position: relative; }
-        .items-list { flex: 1; overflow-y: auto; margin: 15px 0; border-top: 1px solid #222; padding-top: 10px; }
-        .row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
-        .total { font-size: 32px; color: var(--main); font-weight: bold; text-align: center; margin: 20px 0; border-top: 2px solid var(--main); padding-top: 15px; }
-        .btn-exe { width: 100%; padding: 18px; background: var(--main); color: #000; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-exe:hover { box-shadow: 0 0 25px var(--main); transform: scale(1.02); }
-        .menu-btn { width: 100%; padding: 12px; margin-bottom: 8px; background: #111; border: 1px solid #333; border-radius: 10px; color: #fff; cursor: pointer; text-align: right; transition: 0.2s; }
-        .menu-btn:hover { background: var(--main); color: #000; }
+        
+        /* Side Navigation */
+        nav { width: 240px; background: #000; border-left: 1px solid var(--border); display: flex; flex-direction: column; padding-top: 20px; }
+        .nav-link { padding: 15px 25px; color: #8b949e; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .nav-link:hover, .nav-link.active { background: var(--card); color: var(--neon); border-right: 4px solid var(--neon); }
+        
+        /* Main View */
+        main { flex: 1; display: flex; flex-direction: column; }
+        header { height: 70px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; background: #000; }
+        .search-input { background: #0d1117; border: 1px solid var(--border); border-radius: 20px; padding: 8px 20px; color: white; width: 250px; }
+
+        /* Dashboard Content */
+        .content { flex: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; align-content: start; }
+        
+        /* Modern Card */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .card:hover { border-color: var(--neon); transform: translateY(-5px); }
+        .card img { width: 100%; height: 110px; object-fit: cover; border-bottom: 1px solid var(--border); }
+        .card-body { padding: 10px; text-align: center; }
+        .card-name { font-weight: bold; font-size: 14px; display: block; }
+        .card-price { color: var(--neon); font-size: 13px; margin-top: 5px; display: block; }
+
+        /* Receipt Sidebar (Right) */
+        .pos-receipt { background: #000; border: 1px solid var(--border); border-radius: 15px; display: flex; flex-direction: column; padding: 20px; }
+        .cart-list { flex: 1; overflow-y: auto; margin: 15px 0; border-top: 1px dashed var(--border); padding-top: 10px; }
+        .cart-item { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+        
+        .totals { border-top: 2px solid var(--neon); padding-top: 15px; }
+        .total-row { display: flex; justify-content: space-between; font-size: 22px; font-weight: bold; color: var(--neon); }
+        .btn-pay { width: 100%; padding: 15px; background: var(--neon); color: black; border: none; border-radius: 10px; font-weight: bold; font-size: 18px; margin-top: 15px; cursor: pointer; box-shadow: 0 0 15px rgba(0,242,255,0.2); }
+
+        /* Stats Boxes */
+        .stats-area { display: flex; gap: 10px; margin-bottom: 20px; grid-column: span 2; }
+        .stat-box { background: var(--card); flex: 1; padding: 15px; border-radius: 12px; border-right: 3px solid var(--neon); }
+
+        @media (max-width: 1000px) {
+            .content { grid-template-columns: 1fr; }
+            nav { display: none; }
+        }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="avatar"></div>
-        <h3 style="color:var(--main); margin:0; letter-spacing:1px;">MARWAN ATROUSHI</h3>
-        <p style="font-size:11px; opacity:0.6; margin-bottom:20px;">SYSTEM OWNER / CEO</p>
-        
-        <div class="stats-box">
-            <div style="font-size:10px; opacity:0.7;">کۆی کڕیارێن ئەڤڕۆ</div>
-            <div id="customer-count" style="font-size:24px; color:var(--main); font-weight:bold;">0</div>
-        </div>
 
-        <button class="menu-btn" onclick="alert('Dashboard is active for Marwan')">📊 داشبۆردا گشتی</button>
-        <button class="menu-btn" onclick="alert('Inventory management coming soon')">📦 کۆگا و مەخزەن</button>
-        <button class="menu-btn" onclick="alert('Financial reports secured')">🧾 ڕاپۆرتێن دارایی</button>
-        <button class="menu-btn" onclick="location.reload()">🔄 نووکرنا سیستەمی</button>
+    <nav>
+        <div style="text-align:center; padding-bottom: 20px;">
+            <div style="width:70px; height:70px; background:var(--neon); border-radius:50%; margin: 0 auto 10px; display:flex; align-items:center; justify-content:center; color:black; font-weight:bold; font-size:24px;">M</div>
+            <h3 style="margin:0; font-size:16px;">MARWAN ATROUSHI</h3>
+        </div>
+        <div class="nav-link active">🛒 فرۆشتن</div>
+        <div class="nav-link">📦 کۆگا</div>
+        <div class="nav-link">📊 حسابات</div>
+        <div class="nav-link">👥 کڕیار</div>
+        <div class="nav-link">⚙️ ڕێکخستن</div>
     </nav>
 
     <main>
-        <div>
-            <h2 style="margin-top:0;">لیستا کەلوپەلان</h2>
-            <div class="grid" id="menu"></div>
-        </div>
+        <header>
+            <input type="text" class="search-input" placeholder="لێگەڕیان...">
+            <div id="live-clock" style="color:var(--neon); font-family:monospace;"></div>
+        </header>
 
-        <div class="receipt">
-            <div style="text-align:center;">
-                <h3 style="margin:0; color:var(--main);">MARWAN SYSTEMS</h3>
-                <small id="live-time" style="opacity:0.5;"></small>
-            </div>
-            
-            <div class="items-list" id="cart">
-                <p id="empty-msg" style="text-align:center; opacity:0.3; margin-top:50px;">سەبەتە یا خاڵییە</p>
+        <div class="content">
+            <div class="stats-area">
+                <div class="stat-box"><small>کۆی فرۆشتن</small><div id="total-sales-count" style="font-size:20px; font-weight:bold;">0</div></div>
+                <div class="stat-box"><small>کۆی پارە</small><div id="total-money" style="font-size:20px; font-weight:bold; color:var(--neon);">0</div></div>
             </div>
 
-            <div class="total">Total: <span id="total-price">0</span> <small style="font-size:12px;">IQD</small></div>
-            <button class="btn-exe" onclick="processSale()">تەمامکرنا فرۆشتنێ (Execute)</button>
+            <div class="products-grid" id="p-grid"></div>
+
+            <div class="pos-receipt">
+                <h4 style="text-align:center; margin:0;">پسۆلا فرۆشتنێ</h4>
+                <div class="cart-list" id="cart"></div>
+                <div class="totals">
+                    <div class="total-row">
+                        <span>Total:</span>
+                        <span id="grand-total">0</span>
+                    </div>
+                    <button class="btn-pay" onclick="checkout()">تەمامکرنا فرۆشتنێ</button>
+                </div>
+            </div>
         </div>
     </main>
 
     <script>
         const products = [
-            { n: "iPhone 15 Pro Max", p: 1650000 }, { n: "MacBook Air M2", p: 1850000 },
-            { n: "iPad Pro", p: 1100000 }, { n: "Apple Watch Ultra", p: 950000 },
-            { n: "AirPods Pro 2", p: 350000 }, { n: "Samsung S24 Ultra", p: 1450000 }
+            { id: 1, n: "iPhone 15 Pro", p: 1650000, img: "https://images.unsplash.com/photo-1696446701796-da61225697cc?w=200" },
+            { id: 2, n: "Samsung S24", p: 1450000, img: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=200" },
+            { id: 3, n: "Apple Watch", p: 850000, img: "https://images.unsplash.com/photo-1544117518-30dd5f2f309e?w=200" },
+            { id: 4, n: "MacBook Air", p: 1850000, img: "https://images.unsplash.com/photo-1517336712461-120516447819?w=200" },
+            { id: 5, n: "AirPods Pro", p: 350000, img: "https://images.unsplash.com/photo-1588423770670-4599e992cc17?w=200" },
+            { id: 6, n: "Gaming PC", p: 2500000, img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=200" }
         ];
 
+        let cartData = [];
         let total = 0;
-        let count = localStorage.getItem('m_customers') || 0;
-        document.getElementById('customer-count').innerText = count;
+        let saleCount = localStorage.getItem('m_count') || 0;
+        let totalCash = localStorage.getItem('m_cash') || 0;
 
-        const cartDiv = document.getElementById('cart');
-        const totalSpan = document.getElementById('total-price');
+        document.getElementById('total-sales-count').innerText = saleCount;
+        document.getElementById('total-money').innerText = parseInt(totalCash).toLocaleString() + " IQD";
 
+        const grid = document.getElementById('p-grid');
         products.forEach(p => {
             const div = document.createElement('div');
-            div.className = 'item';
-            div.innerHTML = `<h4>${p.n}</h4><p style="color:var(--main)">${p.p.toLocaleString()} IQD</p>`;
-            div.onclick = () => {
-                document.getElementById('empty-msg')?.remove();
-                total += p.p;
-                totalSpan.innerText = total.toLocaleString();
-                const row = document.createElement('div');
-                row.className = 'row';
-                row.innerHTML = `<span>${p.n}</span> <span>${p.p.toLocaleString()}</span>`;
-                cartDiv.appendChild(row);
-            };
-            document.getElementById('menu').appendChild(div);
+            div.className = 'card';
+            div.innerHTML = `<img src="${p.img}"><div class="card-body"><span class="card-name">${p.n}</span><span class="card-price">${p.p.toLocaleString()} IQD</span></div>`;
+            div.onclick = () => addToCart(p);
+            grid.appendChild(div);
         });
 
-        function processSale() {
-            if(total === 0) return alert("ببۆره، کڕین نەهاتییە دەستنیشانکرن!");
-            count++;
-            localStorage.setItem('m_customers', count);
-            alert(`سەرکەفتی بوو!\nپسۆلا ژمارە #${count} ب ناڤێ MARWAN ATROUSHI هاتە تۆمارکرن.`);
+        function addToCart(p) {
+            cartData.push(p);
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartDiv = document.getElementById('cart');
+            cartDiv.innerHTML = '';
+            total = 0;
+            cartData.forEach((item, index) => {
+                total += item.p;
+                const row = document.createElement('div');
+                row.className = 'cart-item';
+                row.innerHTML = `<span>${item.n}</span><span>${item.p.toLocaleString()}</span>`;
+                cartDiv.appendChild(row);
+            });
+            document.getElementById('grand-total').innerText = total.toLocaleString();
+        }
+
+        function checkout() {
+            if(cartData.length === 0) return alert("سەبەتە یا خاڵییە!");
+            saleCount++;
+            totalCash = parseInt(totalCash) + total;
+            localStorage.setItem('m_count', saleCount);
+            localStorage.setItem('m_cash', totalCash);
+            alert("فرۆشتن ب سەرکەفتی ئەنجام دا ب ناڤێ Marwan Atroushi");
             location.reload();
         }
 
         setInterval(() => {
-            document.getElementById('live-time').innerText = new Date().toLocaleString('ku-IQ');
+            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ku-IQ');
         }, 1000);
     </script>
 </body>
